@@ -14,7 +14,7 @@ import com.squareup.picasso.Picasso
 
 class Adapter(
     private val context: Context,
-    private val list: List<Model>,
+    private val list: MutableList<Model>,
     private val viewPager2: ViewPager2
 ) : RecyclerView.Adapter<MyViewHolder>() {
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): MyViewHolder {
@@ -27,6 +27,12 @@ class Adapter(
     override fun onBindViewHolder(holder: MyViewHolder, i: Int) {
         val model = list[i]
         Picasso.get().load(model.cityImage).fit().into(holder.imageView)
+
+        // Auto Scroll code
+        if (i == list.size - 2)
+        {
+            viewPager2.post(runnable)
+        }
     }
 
     override fun getItemCount(): Int {
@@ -41,4 +47,11 @@ class Adapter(
         }
     }
 
+    // Auto Scroll code
+    private val runnable = Runnable {
+        list.addAll(list)
+        notifyDataSetChanged()
+    }
+
 }
+

@@ -1,16 +1,21 @@
 package com.example.viewpagerslider
 
 import android.os.Bundle
+import android.os.Handler
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.CompositePageTransformer
 import androidx.viewpager2.widget.MarginPageTransformer
 import androidx.viewpager2.widget.ViewPager2
+import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 
 class MainActivity : AppCompatActivity() {
 
     lateinit var imagelist : MutableList<Model>
     lateinit var viewPager2: ViewPager2
+
+    // Auto Scroll code
+    private val handler = Handler()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,11 +37,27 @@ class MainActivity : AppCompatActivity() {
         }
         viewPager2.setPageTransformer(compositePageTransformer)
 
+        // Auto Scroll code
+        viewPager2.registerOnPageChangeCallback(object : OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+                handler.removeCallbacks(sliderrunnable)
+                handler.postDelayed(sliderrunnable, 3000) // here 3 second time
+            }
+        })
     }
+
+    // Auto Scroll code
+    private val sliderrunnable = Runnable {
+        viewPager2.currentItem = viewPager2.currentItem + 1
+    }
+
+
 
     private fun loadImagelist() {
         imagelist.add(Model("https://parsefiles.back4app.com/sxuZjQKyRnJc3O9KytffkfijvmiDGJFFF7pqCKxU/c3a640ab26723f5e21c1642ce64e0b98_mohit-tomar-ll57sYdDnsw-unsplash.jpeg"))
         imagelist.add(Model("https://parsefiles.back4app.com/sxuZjQKyRnJc3O9KytffkfijvmiDGJFFF7pqCKxU/a49b8559239cbf0422061ff17817f9e7_animation-bg.jpeg"))
         imagelist.add(Model("https://parsefiles.back4app.com/sxuZjQKyRnJc3O9KytffkfijvmiDGJFFF7pqCKxU/3f9c17929fc04e1582be2d84734e6551_m-blog-5.jpeg"))
     }
+
 }
